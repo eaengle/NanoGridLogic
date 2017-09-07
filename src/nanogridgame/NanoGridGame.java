@@ -139,22 +139,14 @@ public class NanoGridGame {
     }
 
     public void saveGame(File output) {
-        NanoGridFile file = new NanoGridFile();
-        try{saveGame(file,output);}
-        catch (JAXBException ex){
+        NanoGridFile file = new NanoGridFile(Settings,Board);
+        try{file.Serialize(output);}
+        catch (Exception ex){
             System.out.println(ex);
         }
     }
     
-    public void saveGame(NanoGridFile game, File output) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(nanogridgame.NanoGridFile.class);
-        JAXBElement<nanogridgame.NanoGridFile> root = new JAXBElement(new QName("nano_grid_game"),
-                nanogridgame.NanoGridFile.class, game);
-        JAXBSource source = new JAXBSource(context, root);
-        Marshaller serializer = context.createMarshaller();
-        serializer.marshal(source, output);
-
-    }
+    
 
   
 

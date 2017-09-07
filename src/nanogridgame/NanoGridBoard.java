@@ -154,4 +154,8 @@ public class NanoGridBoard {
     public int getRowSize() {
         return Board[0].length;
     }
+    
+    char[][] getColumns(){
+        return Board;
+    }
 }
