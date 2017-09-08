@@ -21,10 +21,10 @@ import static nanogridgame.NanoGridBoard.FillChar;
  */
 public class NanoGridGame {
 
-    NanoGridBoard Board;
-    char[][] PlayBoardColumns;
-    char[][] PlayBoardRows;
-    NanoGridParameters Settings;
+    private NanoGridBoard Board;
+    private char[][] PlayBoardColumns;
+    private char[][] PlayBoardRows;
+    private NanoGridParameters Settings;
 
     public NanoGridGame(NanoGridParameters p) {
         Board = new NanoGridBoard(p);
@@ -49,7 +49,7 @@ public class NanoGridGame {
         create(Settings.Columns, Settings.Rows);
     }
 
-    public void Execute() {
+    public void execute() {
 
     }
 
@@ -57,6 +57,7 @@ public class NanoGridGame {
         return Board;
     }
 
+    public NanoGridParameters getSettings(){return Settings;}
     public void clearCell(int c, int r) {
         PlayBoardColumns[c][r] = 0;
         PlayBoardRows[r][c] = 0;
@@ -75,7 +76,7 @@ public class NanoGridGame {
     public boolean checkWin() {
         Integer[][] cols = Board.getColumnCounts();
         for (int c = 0; c < cols.length; c++) {
-            Integer[] cnts = GetCellCount(PlayBoardColumns[c]);
+            Integer[] cnts = getCellCount(PlayBoardColumns[c]);
             if (!areEqual(cnts, cols[c])) {
                 return false;
             }
@@ -83,7 +84,7 @@ public class NanoGridGame {
 
         Integer[][] rows = Board.getRowCounts();
         for (int r = 0; r < rows.length; r++) {
-            Integer[] cnts = GetCellCount(PlayBoardRows[r]);
+            Integer[] cnts = getCellCount(PlayBoardRows[r]);
             if (!areEqual(cnts, rows[r])) {
                 return false;
             }
@@ -92,7 +93,7 @@ public class NanoGridGame {
         return true;
     }
 
-    private Integer[] GetCellCount(char[] cary) {
+    private Integer[] getCellCount(char[] cary) {
         ArrayList<Integer> lst = new ArrayList<>();
         int cnt = 0;
         for (int c = 0; c < cary.length; c++) {
@@ -122,28 +123,44 @@ public class NanoGridGame {
         return true;
     }
 
-    public void setBoard(NanoGridBoard board) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void resetBoard(NanoGridBoard board) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setBoard(File loadFile) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public void loadBoard(File loadFile) {
+            NanoGridFile file = new NanoGridFile(this);
+            try{file.deserialize(loadFile);}
+            catch (Exception ex){
+                System.out.println(ex);
+            }}
 
     public void resetBoard(File loadFile) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        loadBoard(loadFile);
+        PlayBoardColumns = new char[Settings.Columns][Settings.Rows];
+        PlayBoardRows = new char[Settings.Rows][Settings.Columns];
     }
 
     public void saveGame(File output) {
-        NanoGridFile file = new NanoGridFile(Settings,Board);
-        try{file.Serialize(output);}
+        NanoGridFile file = new NanoGridFile(this);
+        try{file.serialize(output);}
         catch (Exception ex){
             System.out.println(ex);
         }
+    }
+
+    void setBoard(char[][] board) {
+        Board = new NanoGridBoard(Settings);
+        Board.create(board);
+    }
+
+    void updateSettings(NanoGridParameters settings) {
+        Settings = settings;
+        create();
+    }
+
+    public char[][] getPlayColumns(){return PlayBoardColumns;}
+    void setPlayColumns(char[][] cols) {
+        PlayBoardColumns =cols;
+    }
+    char[][] getPlayRows(){return PlayBoardRows;}
+    public void setPlayRows(char[][] rows) {
+        PlayBoardRows = rows;
     }
     
     

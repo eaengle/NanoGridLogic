@@ -30,6 +30,19 @@ public class NanoGridBoard {
         create(sz,sz);
     }
     
+    public void create(char[][] board){
+        Settings.Columns = board.length;
+        Settings.Rows = board[0].length;
+        Board = new char[Settings.Columns][ Settings.Rows];
+        for(int c =0 ; c< Settings.Columns;c++)
+        {
+            for(int r = 0;r < Settings.Rows;r++)
+            {
+                char ch = board[c][r];
+                Board[c][r] = ch == '_' ? 0 : ch;
+            }
+        }
+    }
     public void create(int cols,int rows){
         Settings.Columns = cols;
         Settings.Rows =rows;
@@ -158,4 +171,7 @@ public class NanoGridBoard {
     char[][] getColumns(){
         return Board;
     }
-}
+
+    
+
+ }
