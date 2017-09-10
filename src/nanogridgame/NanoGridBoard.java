@@ -21,6 +21,7 @@ public class NanoGridBoard {
     Random Rnd = new Random();
     public static final char FillChar = '#';
     public static final char MarkChar = 'X';
+    public static final char EmptyChar = ' ';
 
     NanoGridParameters Settings;
 
@@ -40,7 +41,7 @@ public class NanoGridBoard {
         for (int c = 0; c < Settings.Columns; c++) {
             for (int r = 0; r < Settings.Rows; r++) {
                 char ch = board[c][r];
-                Board[c][r] = ch == '_' ? 0 : ch;
+                Board[c][r] = ch == '_' ? EmptyChar : ch;
             }
         }
     }
@@ -49,14 +50,21 @@ public class NanoGridBoard {
         Settings.Columns = cols;
         Settings.Rows = rows;
         Board = new char[cols][rows];
-
-        for (int c = 0; c < cols; c++) {
-            int cnt = Rnd.nextInt(Settings.MaxColumnSquares) + 1;
-            fillCol(cnt, c);
-        }
-        for (int r = 0; r < rows; r++) {
-            int cnt = Rnd.nextInt(Settings.MaxRowSquares) + 1;
-            fillRow(cnt, r);
+        int ccnt = 0;
+        int rcnt = 0;
+        int cst = Rnd.nextInt(cols);
+        int rst = Rnd.nextInt(rows);
+        while(ccnt <cols && rcnt < rows ){
+           if (rcnt < rows) {
+               rst = ++rst%rows;
+               fillRow(rst);
+               ++rcnt;
+           }  
+           if (ccnt < cols){
+               cst = ++cst%cols;
+               fillCol(cst);
+               ++ccnt;
+           }
         }
     }
 
@@ -118,12 +126,14 @@ public class NanoGridBoard {
         return lst.toArray(ary);
     }
 
-    private void fillCol(int cnt, int c) {
+    private void fillCol( int c) {
+         int cnt = Settings.MaxColumnSquares;//Rnd.nextInt(Settings.MaxColumnSquares) + 1;
         fillArray(cnt, Board[c]);
     }
 
-    private void fillRow(int cnt, int r) {
+    private void fillRow( int r) {
         char[] ary = createRowArray(r);
+         int cnt = Settings.MaxRowSquares;//Rnd.nextInt(Settings.MaxRowSquares) + 1;
         fillArray(cnt, ary);
         fillRowArray(r, ary);
     }
@@ -135,12 +145,17 @@ public class NanoGridBoard {
         if (cnt >= ary.length) {
             cnt = ary.length - 1;
         }
-        while (countCells(ary) < cnt) {
-            int pos = Rnd.nextInt(ary.length);
-            ary[pos] = FillChar;
+        
+        int pos = Rnd.nextInt(ary.length);
+        for(int i=0;i < cnt;i++){
+            int s = Rnd.nextInt(100)+1;
+            pos = ++pos%ary.length;
+            if (s>Settings.RowBreakChance)
+                ary[pos] = FillChar;
         }
     }
 
+        
     private int countCells(char[] c) {
         int cnt = 0;
         for (int i = 0; i < c.length; i++) {

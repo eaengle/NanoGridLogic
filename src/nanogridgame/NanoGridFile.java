@@ -75,7 +75,7 @@ public class NanoGridFile implements Serializable {
         addValue(settings.Columns, "Columns", e, doc);
         addValue(settings.Rows, "Rows", e, doc);
         addValue(settings.MaxColumnSquares, "MaxColumnSquares", e, doc);
-        addValue(settings.MaxRowSquares, "MaxRowSquares", e, doc);
+        addValue(settings.RowBreakChance, "RowBreakChance", e, doc);
 
     }
 
@@ -150,6 +150,9 @@ public class NanoGridFile implements Serializable {
             }
             else if ("MaxRowSquares".equals(name)){
                 p.MaxRowSquares = Integer.parseInt(val);
+            }
+            else if ("RowBreakChance".equals(name)){
+                p.RowBreakChance = Integer.parseInt(val);
             }
             n = n.getNextSibling();
         }
