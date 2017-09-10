@@ -15,22 +15,14 @@ import java.util.ArrayList;
 public class GridSolution {
     private ArrayList<char[]> Solutions;
     char[] Ary;
-    int[] Counts;
+    Integer[] Counts;
     public GridSolution(){
         Solutions = new ArrayList<>();
     }
-    public void createSolutions(int[] counts,int size){
+    public void createSolutions(Integer[] counts,int size){
         Counts = counts;
         Ary = new char[size];
-        
-        int st = 0;
-        int ed = size+1;
-        for(int i=counts.length-1;i>=0;i--){
-            ed = ed -1;
-            ed = ed - counts[i];
-        }
-        
-        fillArray(st,0);
+        fillArray(0,0);
     }
     
     public int getSolutionCount(){
@@ -44,9 +36,8 @@ public class GridSolution {
     }
    
     private void fillArray(int st,int idx) {
-        
         int cnt = Counts[idx];
-        for(int ctr=st;ctr < Ary.length-cnt;ctr++){
+        for(int ctr=st;ctr <= Ary.length-cnt;ctr++){
             clearArray(st);
             for(int i=ctr;i<ctr+cnt;i++)
             {

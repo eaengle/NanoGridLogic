@@ -34,7 +34,7 @@ public class NanoGridBoard {
         create(sz, sz);
     }
 
-    public void create(char[][] board) {
+    public void copy(char[][] board) {
         Settings.Columns = board.length;
         Settings.Rows = board[0].length;
         Board = new char[Settings.Columns][Settings.Rows];
@@ -66,6 +66,7 @@ public class NanoGridBoard {
                ++ccnt;
            }
         }
+        createUniqueSolution();
     }
 
     public char getCell(int col, int row) {
@@ -127,13 +128,13 @@ public class NanoGridBoard {
     }
 
     private void fillCol( int c) {
-         int cnt = Settings.MaxColumnSquares;//Rnd.nextInt(Settings.MaxColumnSquares) + 1;
+         int cnt = Settings.MaxColumnSquares+1;//Rnd.nextInt(Settings.MaxColumnSquares) + 1;
         fillArray(cnt, Board[c]);
     }
 
     private void fillRow( int r) {
         char[] ary = createRowArray(r);
-         int cnt = Settings.MaxRowSquares;//Rnd.nextInt(Settings.MaxRowSquares) + 1;
+         int cnt = Settings.MaxRowSquares+1;//Rnd.nextInt(Settings.MaxRowSquares) + 1;
         fillArray(cnt, ary);
         fillRowArray(r, ary);
     }
@@ -147,11 +148,17 @@ public class NanoGridBoard {
         }
         
         int pos = Rnd.nextInt(ary.length);
-        for(int i=0;i < cnt;i++){
-            int s = Rnd.nextInt(100)+1;
-            pos = ++pos%ary.length;
-            if (s>Settings.RowBreakChance)
-                ary[pos] = FillChar;
+        boolean filled = false;
+        while(!filled)
+        {        
+            for(int i=0;i < cnt;i++){
+                int s = Rnd.nextInt(100)+1;
+                pos = ++pos%ary.length;
+                if (s>Settings.RowBreakChance){
+                    filled = true;
+                    ary[pos] = FillChar;
+                }
+            }
         }
     }
 
@@ -266,5 +273,45 @@ public class NanoGridBoard {
                     
         }
     }
+
+    private void createUniqueSolution(){
+        GridSolutions solutions = new GridSolutions(Settings);
+       
+        
+    }
+
+    public boolean checkWin(NanoGridBoard brd) {
+        Integer[][] ctrl = getColumnCounts();
+        Integer[][] test = brd.getColumnCounts();
+        for (int c = 0; c < ctrl.length; c++) {
+            if (!areEqual(ctrl[c], test[c])) {
+                return false;
+            }
+        }
+
+        ctrl = getRowCounts();
+        test = brd.getRowCounts();
+        for (int i = 0; i < ctrl.length; i++){
+            if (!areEqual(ctrl[i], test[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    private boolean areEqual(Integer[] ary1, Integer[] ary2) {
+        if (ary1.length != ary2.length) {
+            return false;
+        }
+        for (int i = 0; i < ary1.length; i++) {
+            if (!ary1[i].equals(ary2[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
 
 }
