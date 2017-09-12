@@ -21,6 +21,7 @@ public class NanoGridBoard {
     Random Rnd = new Random();
     public static final char FillChar = '#';
     public static final char MarkChar = 'X';
+    public static final char EmptyChar = ' ';
 
     NanoGridParameters Settings;
 
@@ -33,14 +34,14 @@ public class NanoGridBoard {
         create(sz, sz);
     }
 
-    public void create(char[][] board) {
+    public void copy(char[][] board) {
         Settings.Columns = board.length;
         Settings.Rows = board[0].length;
         Board = new char[Settings.Columns][Settings.Rows];
         for (int c = 0; c < Settings.Columns; c++) {
             for (int r = 0; r < Settings.Rows; r++) {
                 char ch = board[c][r];
-                Board[c][r] = ch == '_' ? 0 : ch;
+                Board[c][r] = ch == '_' ? EmptyChar : ch;
             }
         }
     }
@@ -49,15 +50,23 @@ public class NanoGridBoard {
         Settings.Columns = cols;
         Settings.Rows = rows;
         Board = new char[cols][rows];
-
-        for (int c = 0; c < cols; c++) {
-            int cnt = Rnd.nextInt(Settings.MaxColumnSquares) + 1;
-            fillCol(cnt, c);
+        int ccnt = 0;
+        int rcnt = 0;
+        int cst = Rnd.nextInt(cols);
+        int rst = Rnd.nextInt(rows);
+        while(ccnt <cols && rcnt < rows ){
+           if (rcnt < rows) {
+               rst = ++rst%rows;
+               fillRow(rst);
+               ++rcnt;
+           }  
+           if (ccnt < cols){
+               cst = ++cst%cols;
+               fillCol(cst);
+               ++ccnt;
+           }
         }
-        for (int r = 0; r < rows; r++) {
-            int cnt = Rnd.nextInt(Settings.MaxRowSquares) + 1;
-            fillRow(cnt, r);
-        }
+        createUniqueSolution();
     }
 
     public char getCell(int col, int row) {
@@ -118,12 +127,14 @@ public class NanoGridBoard {
         return lst.toArray(ary);
     }
 
-    private void fillCol(int cnt, int c) {
+    private void fillCol( int c) {
+         int cnt = Settings.MaxColumnSquares+1;//Rnd.nextInt(Settings.MaxColumnSquares) + 1;
         fillArray(cnt, Board[c]);
     }
 
-    private void fillRow(int cnt, int r) {
+    private void fillRow( int r) {
         char[] ary = createRowArray(r);
+         int cnt = Settings.MaxRowSquares+1;//Rnd.nextInt(Settings.MaxRowSquares) + 1;
         fillArray(cnt, ary);
         fillRowArray(r, ary);
     }
@@ -135,12 +146,23 @@ public class NanoGridBoard {
         if (cnt >= ary.length) {
             cnt = ary.length - 1;
         }
-        while (countCells(ary) < cnt) {
-            int pos = Rnd.nextInt(ary.length);
-            ary[pos] = FillChar;
+        
+        int pos = Rnd.nextInt(ary.length);
+        boolean filled = false;
+        while(!filled)
+        {        
+            for(int i=0;i < cnt;i++){
+                int s = Rnd.nextInt(100)+1;
+                pos = ++pos%ary.length;
+                if (s>Settings.RowBreakChance){
+                    filled = true;
+                    ary[pos] = FillChar;
+                }
+            }
         }
     }
 
+        
     private int countCells(char[] c) {
         int cnt = 0;
         for (int i = 0; i < c.length; i++) {
@@ -251,5 +273,45 @@ public class NanoGridBoard {
                     
         }
     }
+
+    private void createUniqueSolution(){
+        GridSolutions solutions = new GridSolutions(Settings);
+       
+        
+    }
+
+    public boolean checkWin(NanoGridBoard brd) {
+        Integer[][] ctrl = getColumnCounts();
+        Integer[][] test = brd.getColumnCounts();
+        for (int c = 0; c < ctrl.length; c++) {
+            if (!areEqual(ctrl[c], test[c])) {
+                return false;
+            }
+        }
+
+        ctrl = getRowCounts();
+        test = brd.getRowCounts();
+        for (int i = 0; i < ctrl.length; i++){
+            if (!areEqual(ctrl[i], test[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    private boolean areEqual(Integer[] ary1, Integer[] ary2) {
+        if (ary1.length != ary2.length) {
+            return false;
+        }
+        for (int i = 0; i < ary1.length; i++) {
+            if (!ary1[i].equals(ary2[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
 
 }

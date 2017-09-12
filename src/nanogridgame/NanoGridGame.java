@@ -146,7 +146,7 @@ public class NanoGridGame {
 
     void setBoard(char[][] board) {
         Board = new NanoGridBoard(Settings);
-        Board.create(board);
+        Board.copy(board);
     }
 
     void updateSettings(NanoGridParameters settings) {
