@@ -162,9 +162,19 @@ public class NanoGridGame {
     public void setPlayRows(char[][] rows) {
         PlayBoardRows = rows;
     }
-    
-    
 
-  
+    public int getIncorrectMoves() {
+        int cnt=0;
+        
+        for(int c=0;c<Settings.Columns;c++){
+            for(int r=0;r <Settings.Rows;r++){
+                if (Board.getCell(c, r) != NanoGridBoard.FillChar &&
+                    PlayBoardColumns[c][r] == NanoGridBoard.FillChar){
+                    ++cnt;
+                }
+            }
+        }
+        return cnt;
+    }
 
 }
