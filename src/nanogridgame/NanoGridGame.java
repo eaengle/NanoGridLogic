@@ -7,12 +7,6 @@ package nanogridgame;
 
 import java.io.File;
 import java.util.ArrayList;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.util.JAXBSource;
-import javax.xml.namespace.QName;
 import static nanogridgame.NanoGridBoard.FillChar;
 
 /**
